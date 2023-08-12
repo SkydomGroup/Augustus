@@ -27,12 +27,12 @@
 ### How to use it?
 
 #### The first method.
-* Download the compiled jar from [Release](https://github.com/SkydomGroup/Augustus/releases).
+* Download the compiled Jar from [Release](https://github.com/SkydomGroup/Augustus/releases).
 
 #### The second approach.
 * Clone this repo.
 * Run `./gradlew applyPatches`, then `./gradlew createReobfPaperclipJar` from your terminal.
-* You can find the compiled jar in the project root's *build/libs* directory.
+* You can find the compiled Jar in the project root's *build/libs* directory.
 
 
 ## 中文(简体)
@@ -54,7 +54,7 @@
 ### 我该如何使用它？
 
 #### 第一种办法。
-* 到 [Release](https://github.com/SkydomGroup/Augustus/releases) 去下载编译好的jar。
+* 到 [Release](https://github.com/SkydomGroup/Augustus/releases) 去下载编译好的Jar。
 
 #### 第二种办法。
 * 克隆这个存储库。
