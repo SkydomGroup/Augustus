@@ -1,51 +1,51 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chosen <haizhongdelan@outlook.com>
-Date: Sun, 2 Apr 2023 05:09:20 +0800
+Date: Sat, 12 Aug 2023 20:19:50 +0800
 Subject: [PATCH] Build changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a0c5592530d2a59bfde87d1e9eb3752e7d4694da..4135596495e599e467f9927c69957293fa5c3cd8 100644
+index fb98936bb8a5488db75d676c5bcb4060597fbbf8..9ac0e835c273f98ce40de3d5bd6306f235091738 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -7,8 +7,12 @@ plugins {
- }
+@@ -13,8 +13,12 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+ val alsoShade: Configuration by configurations.creating
  
  dependencies {
 -    implementation(project(":paper-api"))
 -    implementation(project(":paper-mojangapi"))
-+    // Augustus start
++    // Augustus start - Build changes
 +    implementation(project(":augustus-api"))
 +    implementation("io.papermc.paper:paper-mojangapi:1.20.1-R0.1-SNAPSHOT") {
 +        exclude("io.papermc.paper", "paper-api")
 +    }
-+    // Augustus end
++    // Augustus end - Build changes
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
      implementation("net.minecrell:terminalconsoleappender:1.3.0")
-@@ -63,7 +67,7 @@ tasks.jar {
+@@ -72,7 +76,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
 -            "Implementation-Version" to "git-Paper-$implementationVersion",
-+            "Implementation-Version" to "git-Augustus-$implementationVersion", // Augustus
++            "Implementation-Version" to "git-Augustus-$implementationVersion", // Augustus - Build changes
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -135,7 +139,7 @@ fun TaskContainer.registerRunTask(
+@@ -149,7 +153,7 @@ fun TaskContainer.registerRunTask(
      name: String,
      block: JavaExec.() -> Unit
  ): TaskProvider<JavaExec> = register<JavaExec>(name) {
 -    group = "paper"
-+    group = "paperweight" // Augustus
++    group = "paperweight" // Augustus - Build changes
      mainClass.set("org.bukkit.craftbukkit.Main")
      standardInput = System.`in`
      workingDir = rootProject.layout.projectDirectory
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 80cf4852e4010eeeadaf920ab927a40df0179b40..40c80d6e9b7975e7e4495d4181fb02be75b37860 100644
+index 3238cbcba567b1242c77e41f6b6f19a8d157fb4e..0753e9cd2b326fbf41cfaecf165066dbdac28a72 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1679,7 +1679,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1693,7 +1693,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
@@ -55,20 +55,20 @@ index 80cf4852e4010eeeadaf920ab927a40df0179b40..40c80d6e9b7975e7e4495d4181fb02be
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 9f8c5ceb8485b14a84f2a7b2ffc8192be5c6bdfd..a7aeadfea76f9a25d92dd301b454646a9a67791a 100644
+index 249d76acac9a91cd46f0b8a477511974a75d6f4a..399a2027f8d3f6766f5539646ea3c7133dcb213c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -261,7 +261,7 @@ import javax.annotation.Nullable; // Paper
+@@ -265,7 +265,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
 -    private final String serverName = "Paper"; // Paper
-+    private final String serverName = "Augustus"; // Augustus // Paper
++    private final String serverName = "Augustus"; // Augustus - Build changes // Paper
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 774556a62eb240da42e84db4502e2ed43495be17..01fd4b0e732f8a7fce494cf77c35e3fa0d58e51f 100644
+index 774556a62eb240da42e84db4502e2ed43495be17..41f74d1472f1a8f523e94242866d4906a6040725 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -76,7 +76,7 @@ index 774556a62eb240da42e84db4502e2ed43495be17..01fd4b0e732f8a7fce494cf77c35e3fa
          String result = "Unknown-Version";
  
 -        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.papermc.paper/paper-api/pom.properties");
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.skydom.server.chosen/augustus-api/pom.properties"); // Augustus
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.skydom.server.chosen/augustus-api/pom.properties"); // Augustus - Build changes
          Properties properties = new Properties();
  
          if (stream != null) {
