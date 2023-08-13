@@ -28,7 +28,7 @@ index 8f97c9df726ac20cfce7bdddd5dd4f8c5aa76c35..6b31f508e4d2f580ea73a96efdcb4f9c
  
 -                if (!iblockdata.isAir() && iblockdata.isDestroyable()) { // Paper
 +                // Augustus start - Toggle Protect Bedrock and End Portal Frames from being destroyed
-+                if (!this.level.augustusConfig.preventdestroyingunbreakableblocks && !iblockdata.isAir()) { // Paper
++                if (!this.level.augustusConfig.preventdestroyingunbreakableblocks && !iblockdata.isAir()) {
                      BlockPos blockposition1 = blockposition.immutable();
  
                      this.level.getProfiler().push("explosion_blocks");
