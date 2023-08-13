@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Chosen <haizhongdelan@outlook.com>
+Date: Sun, 13 Aug 2023 17:17:27 +0800
+Subject: [PATCH] Toggle sand duping
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+index 18eaccb39a4c81338a8cbebe3de03934913ac2a4..33bfff41f4a02e2b2ce76b7a83754e45571e1592 100644
+--- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -133,7 +133,7 @@ public class FallingBlockEntity extends Entity {
+     @Override
+     public void tick() {
+         // Paper start - fix sand duping
+-        if (this.isRemoved()) {
++        if (!this.level().augustusConfig.sandduping && this.isRemoved()) { // Augustus - Toggle sand duping
+             return;
+         }
+         // Paper end - fix sand duping
+@@ -150,7 +150,7 @@ public class FallingBlockEntity extends Entity {
+             this.move(MoverType.SELF, this.getDeltaMovement());
+ 
+             // Paper start - fix sand duping
+-            if (this.isRemoved()) {
++            if (!this.level().augustusConfig.sandduping && this.isRemoved()) { // Augustus - Toggle sand duping
+                 return;
+             }
+             // Paper end - fix sand duping
+diff --git a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+index 2cd817fd0add41c412eb3b86dc00819c40701580..bdbb7b6b1f898038dacce865fa9efe2a3ab909dc 100644
+--- a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
++++ b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+@@ -122,8 +122,10 @@ public class AugustusWorldConfig {
+     }
+ 
+     public boolean safeteleporting = true;
++    public boolean sandduping = true;
+ 
+     private void Settings() {
+         safeteleporting = getBoolean("settings.safe-teleportation", safeteleporting);
++        sandduping = getBoolean("settings.sand-duping", sandduping);
+     }
+ }

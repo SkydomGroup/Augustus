@@ -6,7 +6,7 @@
     <p>A fork of <a href="https://GitHub.com/PaperMC/Paper">Paper</a> that modifies functions prohibited by Paper.</p>
 </div>
 
-[![Augustus CI](https://GitHub.com/SkydomGroup/Augustus/actions/workflows/Release.yml/badge.svg)](https://GitHub.com/SkydomGroup/Augustus/actions/workflows/Release.yml/)
+[![Augustus CI](https://GitHub.com/SkydomGroup/Augustus/actions/workflows/Release.yml/badge.svg)](https://GitHub.com/SkydomGroup/Augustus/releases)
 
 ## English
 

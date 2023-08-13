@@ -1,0 +1,82 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Chosen <haizhongdelan@outlook.com>
+Date: Sun, 13 Aug 2023 16:58:34 +0800
+Subject: [PATCH] Toggle safe teleportation
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 2edab21bb271405f200de5a19e9c748bb14aba7d..f658cc4f5143b84add4def8fb82fb1ce31891f5d 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -534,6 +534,11 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+     public BlockPos portalBlock;
+     public ServerLevel portalWorld;
+     public void tickEndPortal() {
++        // Augustus start - Toggle safe teleportation
++        if (!this.level.augustusConfig.safeteleporting) {
++            return;
++        }
++        // Augustus end - Toggle safe teleportation
+         BlockPos pos = this.portalBlock;
+         ServerLevel world = this.portalWorld;
+         this.portalBlock = null;
+@@ -3061,7 +3066,11 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+             }
+ 
+             this.processPortalCooldown();
+-            this.tickEndPortal(); // Paper - make end portalling safe
++            // Augustus start - Toggle safe teleportation
++            if (this.level.augustusConfig.safeteleporting) {
++                this.tickEndPortal(); // Paper - make end portalling safe
++            }
++            // Augustus end - Toggle safe teleportation
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
+index 41d7cff39fc37955877668337689b4b26cd8c7cf..f2dd5cab1952a52fb20e87cde189a0c3b910381e 100644
+--- a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
+@@ -53,10 +53,23 @@ public class EndPortalBlock extends BaseEntityBlock {
+                 // return; // CraftBukkit - always fire event in case plugins wish to change it
+             }
+ 
+-            // Paper start - move all of this logic into portal tick
+-            entity.portalWorld = ((ServerLevel)world);
+-            entity.portalBlock = pos.immutable();
+-            // Paper end - move all of this logic into portal tick
++            // Augustus start - Toggle safe teleportation
++            if (entity.level().augustusConfig.safeteleporting) {
++                // Paper start - move all of this logic into portal tick
++                entity.portalWorld = ((ServerLevel) world);
++                entity.portalBlock = pos.immutable();
++                // Paper end - move all of this logic into portal tick
++            } else if (!entity.level().augustusConfig.safeteleporting) {
++                EntityPortalEnterEvent event = new EntityPortalEnterEvent(entity.getBukkitEntity(), new org.bukkit.Location(world.getWorld(), pos.getX(), pos.getY(), pos.getZ()));
++                world.getCraftServer().getPluginManager().callEvent(event);
++
++                if (entity instanceof ServerPlayer) {
++                    ((ServerPlayer) entity).changeDimension(worldserver, PlayerTeleportEvent.TeleportCause.END_PORTAL);
++                    return;
++                }
++                entity.changeDimension(worldserver);
++            }
++            // Augustus end - Toggle safe teleportation
+         }
+ 
+     }
+diff --git a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+index 9690d403da255039a41e7bc7daab8e2c835a2712..2cd817fd0add41c412eb3b86dc00819c40701580 100644
+--- a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
++++ b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+@@ -120,4 +120,10 @@ public class AugustusWorldConfig {
+         final Map<String, Object> value = getMap("world-settings." + worldName + "." + path, null);
+         return value.isEmpty() ? fallback : value;
+     }
++
++    public boolean safeteleporting = true;
++
++    private void Settings() {
++        safeteleporting = getBoolean("settings.safe-teleportation", safeteleporting);
++    }
+ }
