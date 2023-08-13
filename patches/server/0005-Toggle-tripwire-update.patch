@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Chosen <haizhongdelan@outlook.com>
+Date: Sun, 13 Aug 2023 23:47:57 +0800
+Subject: [PATCH] Toggle tripwire update
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java b/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
+index 004dce26ff073f1de52a84cd425c4f60fdab5e50..eea48fbef6f01d9db345eb2b586d64385c539266 100644
+--- a/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/TripWireHookBlock.java
+@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.sounds.SoundEvents;
+ import net.minecraft.sounds.SoundSource;
+ import net.minecraft.util.RandomSource;
++import net.minecraft.util.thread.BlockableEventLoop;
+ import net.minecraft.world.entity.Entity;
+ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.entity.player.Player;
+@@ -147,8 +148,15 @@ public class TripWireHookBlock extends Block {
+                 boolean flag7 = (Boolean) iblockdata2.getValue(TripWireBlock.POWERED);
+ 
+                 flag5 |= flag6 && flag7;
+-                if (k != i || !tripWireBeingRemoved || !flag6) // Paper - don't update the tripwire again if being removed and not disarmed
+-                aiblockdata[k] = iblockdata2;
++                // Augustus start - Toggle tripwire update
++                if (world.augustusConfig.tripwireupdate) {
++                    aiblockdata[k] = iblockdata2; // Augustus - always update it
++                } else {
++                    if (k != i || !tripWireBeingRemoved || !flag6) { // Paper - don't update the tripwire again if being removed and not disarmed {
++                        aiblockdata[k] = iblockdata2;
++                    }
++                }
++                // Augustus end - Toggle tripwire update
+                 if (k == i) {
+                     world.scheduleTick(pos, (Block) this, 10);
+                     flag4 &= flag6;
+diff --git a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+index ae514152fe67e38b933c6ef00bffb9398b9fcd89..33b1d1ac84ef74abf9f3acde8e4f1a6b8c690c26 100644
+--- a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
++++ b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
+@@ -123,9 +123,11 @@ public class AugustusWorldConfig {
+ 
+     public boolean safeteleporting = true;
+     public boolean sandduping = false;
++    public boolean tripwireupdate = false;
+ 
+     private void Settings() {
+         safeteleporting = getBoolean("settings.safe-teleportation", safeteleporting);
+         sandduping = getBoolean("settings.sand-duping", sandduping);
++        tripwireupdate = getBoolean("settings.tripwire-update", tripwireupdate);
+     }
+ }
