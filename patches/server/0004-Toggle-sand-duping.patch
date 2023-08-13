@@ -27,14 +27,14 @@ index 18eaccb39a4c81338a8cbebe3de03934913ac2a4..33bfff41f4a02e2b2ce76b7a83754e45
              }
              // Paper end - fix sand duping
 diff --git a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
-index 2cd817fd0add41c412eb3b86dc00819c40701580..bdbb7b6b1f898038dacce865fa9efe2a3ab909dc 100644
+index 2cd817fd0add41c412eb3b86dc00819c40701580..ae514152fe67e38b933c6ef00bffb9398b9fcd89 100644
 --- a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
 +++ b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
 @@ -122,8 +122,10 @@ public class AugustusWorldConfig {
      }
  
      public boolean safeteleporting = true;
-+    public boolean sandduping = true;
++    public boolean sandduping = false;
  
      private void Settings() {
          safeteleporting = getBoolean("settings.safe-teleportation", safeteleporting);
