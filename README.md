@@ -60,5 +60,5 @@
 
 #### 第二种办法。
 * 克隆这个存储库。
-* 运行 `./gradlew applyPatches`后，再运行`./gradlew createReobfPaperclipJar` 在你的终端。
+* 打开你的终端并运行 `./gradlew applyPatches`后，再运行`./gradlew createReobfPaperclipJar` 。
 * 运行完成后，您可以在 *build/libs* 找到构建好的Jar。
