@@ -72,6 +72,10 @@ paperweight {
     }
 }
 
+tasks.withType<io.papermc.paperweight.tasks.RebuildGitPatches> {
+    filterPatches.set(false)
+}
+
 tasks.register("PaperRefLatest") {
     // Update the PaperRef in gradle.properties to be the latest commit.
     val tempDir = layout.cacheDir("PaperRefLatest");
