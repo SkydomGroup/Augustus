@@ -1,7 +1,7 @@
 name: Release
 on: [push, workflow_dispatch]
 env:
-  version: '1.20.1'
+  version: '1.20.2'
   branch: master
 jobs:
   paperclip:
@@ -21,7 +21,7 @@ jobs:
         run: |
             git config --global user.email "actions@github.com" && git config --global user.name "Github Actions"
             echo "workflow=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-      - name: applyPatches and Build
+      - name: ApplyPatches and CreateReobfPaperclipJar
         run: |
             chmod 777 gradlew
             ./gradlew clean --stacktrace

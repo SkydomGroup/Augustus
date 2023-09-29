@@ -32,7 +32,7 @@ jobs:
                   distribution: 'temurin'
             - name: Setup Gradle
               uses: gradle/gradle-build-action@v2
-            - name: applyPatches and build
+            - name: ApplyPatches and CreateReobfPaperclipJar
               run: |
                   git config --global user.email "no-reply@github.com"
                   git config --global user.name "Github Actions"
@@ -44,4 +44,4 @@ jobs:
             - uses: actions/upload-artifact@v3
               with:
                 name: Augustus Artifact
-                path: build/libs/Atlanta-paperclip-*-reobf.jar
+                path: build/libs/Augustus-paperclip-*-reobf.jar
