@@ -1,28 +1,28 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chosen_1st <haizhongdelan@outlook.com>
-Date: Mon, 14 Aug 2023 00:27:48 +0800
+Date: Fri, 29 Sep 2023 16:45:22 +0800
 Subject: [PATCH] Toggle Protect Bedrock and End Portal Frames from being
  destroyed
 
 
 diff --git a/src/main/java/net/minecraft/world/level/Explosion.java b/src/main/java/net/minecraft/world/level/Explosion.java
-index 8f97c9df726ac20cfce7bdddd5dd4f8c5aa76c35..6b31f508e4d2f580ea73a96efdcb4f9c65d38f34 100644
+index 45243249a561440512ef2a620c60b02e159c80e2..7ae60f31efdcae6164b51d67fcc8eee5000479dc 100644
 --- a/src/main/java/net/minecraft/world/level/Explosion.java
 +++ b/src/main/java/net/minecraft/world/level/Explosion.java
-@@ -168,7 +168,11 @@ public class Explosion {
-                         for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F) {
-                             BlockPos blockposition = BlockPos.containing(d4, d5, d6);
-                             BlockState iblockdata = this.level.getBlockState(blockposition);
+@@ -483,7 +483,11 @@ public class Explosion {
+                             BlockState iblockdata = cachedBlock.blockState;
+                             // Paper end - optimise explosions
+ 
 -                            if (!iblockdata.isDestroyable()) continue; // Paper
 +                            // Augustus start - Toggle Protect Bedrock and End Portal Frames from being destroyed
 +                            if (this.level.augustusConfig.preventdestroyingunbreakableblocks) {
 +                                if (!iblockdata.isDestroyable()) continue; // Paper
 +                            }
 +                            // Augustus end - Toggle Protect Bedrock and End Portal Frames from being destroyed
-                             FluidState fluid = iblockdata.getFluidState(); // Paper
+                             // Paper - optimise explosions
  
-                             if (!this.level.isInWorldBounds(blockposition)) {
-@@ -379,7 +383,8 @@ public class Explosion {
+                             // Paper - optimise explosions
+@@ -703,7 +707,8 @@ public class Explosion {
                  }
                  // CraftBukkit end
  
@@ -32,7 +32,7 @@ index 8f97c9df726ac20cfce7bdddd5dd4f8c5aa76c35..6b31f508e4d2f580ea73a96efdcb4f9c
                      BlockPos blockposition1 = blockposition.immutable();
  
                      this.level.getProfiler().push("explosion_blocks");
-@@ -405,7 +410,36 @@ public class Explosion {
+@@ -729,7 +734,36 @@ public class Explosion {
                      this.level.setBlock(blockposition, Blocks.AIR.defaultBlockState(), 3);
                      block.wasExploded(this.level, blockposition, this);
                      this.level.getProfiler().pop();
@@ -69,31 +69,8 @@ index 8f97c9df726ac20cfce7bdddd5dd4f8c5aa76c35..6b31f508e4d2f580ea73a96efdcb4f9c
              }
  
              objectlistiterator = objectarraylist.iterator();
-diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 92c39519bd0df3000e6cac2859b53606b0f76953..afc3547f4895f174f7f5d94117e56aeb133cda96 100644
---- a/src/main/java/net/minecraft/world/level/Level.java
-+++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -524,10 +524,14 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
-     public boolean setBlock(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
-         // CraftBukkit start - tree generation
-         if (this.captureTreeGeneration) {
--            // Paper start
--            BlockState type = getBlockState(pos);
--            if (!type.isDestroyable()) return false;
--            // Paper end
-+            // Augustus start - Toggle Protect Bedrock and End Portal Frames from being destroyed
-+            if (this.augustusConfig.preventdestroyingunbreakableblocks) {
-+                // Paper start
-+                BlockState type = getBlockState(pos);
-+                if (!type.isDestroyable()) return false;
-+                // Paper end
-+            }
-+            // Augustus end - Toggle Protect Bedrock and End Portal Frames from being destroyed
-             CraftBlockState blockstate = this.capturedBlockStates.get(pos);
-             if (blockstate == null) {
-                 blockstate = CapturedBlockState.getTreeBlockState(this, pos, flags);
 diff --git a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
-index 58d1f76544d7a8d196f75438579266664e5d7404..3930e3ef543553519be5da5acdd0168dc99f1b68 100644
+index 5acf0e1fba2967e67bdb208ef73ae8fa84ffe35d..4ff48681c5da28ef497a8552d9194ef38f34db48 100644
 --- a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 @@ -199,12 +199,16 @@ public class PistonBaseBlock extends DirectionalBlock {
@@ -160,33 +137,6 @@ index 58d1f76544d7a8d196f75438579266664e5d7404..3930e3ef543553519be5da5acdd0168d
              }
  
              world.playSound((Player) null, pos, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
-diff --git a/src/main/java/net/minecraft/world/level/portal/PortalForcer.java b/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
-index 9b38f4c81ca9ef0f91f9d59fc2be4eecc1afc165..68d8b2537f20bba6cb4a5bbcb8ae059d15e1cba7 100644
---- a/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
-+++ b/src/main/java/net/minecraft/world/level/portal/PortalForcer.java
-@@ -242,13 +242,17 @@ public class PortalForcer {
-         for (int j = -1; j < 3; ++j) {
-             for (int k = -1; k < 4; ++k) {
-                 temp.setWithOffset(pos, portalDirection.getStepX() * j + enumdirection1.getStepX() * distanceOrthogonalToPortal, k, portalDirection.getStepZ() * j + enumdirection1.getStepZ() * distanceOrthogonalToPortal);
--                // Paper start - prevent destroying unbreakable blocks
--                if (!io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowPermanentBlockBreakExploits) {
--                    if (!this.level.getBlockState(temp).isDestroyable()) {
--                        return false;
-+                // Augustus start - Toggle Protect Bedrock and End Portal Frames from being destroyed
-+                if (this.level.augustusConfig.preventdestroyingunbreakableblocks) {
-+                    // Paper start - prevent destroying unbreakable blocks
-+                    if (!io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowPermanentBlockBreakExploits) {
-+                        if (!this.level.getBlockState(temp).isDestroyable()) {
-+                            return false;
-+                        }
-                     }
-+                    // Paper end - prevent destroying unbreakable blocks
-                 }
--                // Paper end - prevent destroying unbreakable blocks
-+                // Augustus end - Toggle Protect Bedrock and End Portal Frames from being destroyed
-                 if (k < 0 && !this.level.getBlockState(temp).isSolid()) {
-                     return false;
-                 }
 diff --git a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
 index 33b1d1ac84ef74abf9f3acde8e4f1a6b8c690c26..378458897c24fd4863b74e4baadabff15346c2bc 100644
 --- a/src/main/java/org/skydom/server/chosen/AugustusWorldConfig.java
