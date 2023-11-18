@@ -49,5 +49,5 @@ run/
 
 !gradle/wrapper/gradle-wrapper.jar
 
-/skydommc-server/
-/skydommc-api/
+/augustus-server/
+/augustus-api/
