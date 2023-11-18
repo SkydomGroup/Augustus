@@ -203,10 +203,10 @@ index 0000000000000000000000000000000000000000..76eb1771a3e15a3d53a67dfd3a819369
 +}
 diff --git a/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ef1a898740f6c73a979a782ae40ee1827fb1f96b
+index 0000000000000000000000000000000000000000..d7d35d41dabc1089b14dd16b794e056d80bfc794
 --- /dev/null
 +++ b/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java
-@@ -0,0 +1,135 @@
+@@ -0,0 +1,123 @@
 +package cc.skydom.server.chosen;
 +
 +import org.apache.commons.lang.BooleanUtils;
@@ -328,18 +328,6 @@ index 0000000000000000000000000000000000000000..ef1a898740f6c73a979a782ae40ee182
 +        final Map<String, Object> fallback = getMap("world-settings.default." + path, def);
 +        final Map<String, Object> value = getMap("world-settings." + worldName + "." + path, null);
 +        return value.isEmpty() ? fallback : value;
-+    }
-+
-+    public boolean safeteleporting = true;
-+    public boolean sandduping = false;
-+    public boolean tripwireupdate = false;
-+    public boolean preventdestroyingunbreakableblocks = true;
-+
-+    private void Settings() {
-+        safeteleporting = getBoolean("settings.safe-teleportation", safeteleporting);
-+        sandduping = getBoolean("settings.sand-duping", sandduping);
-+        tripwireupdate = getBoolean("settings.tripwire-update", tripwireupdate);
-+        preventdestroyingunbreakableblocks = getBoolean("settings.prevent-destroying-unbreakable-blocks", preventdestroyingunbreakableblocks);
 +    }
 +}
 diff --git a/src/main/java/cc/skydom/server/chosen/command/AugustusCommand.java b/src/main/java/cc/skydom/server/chosen/command/AugustusCommand.java
