@@ -16,7 +16,7 @@ index 79beac737c17412913983614bd478d33e3c6ed58..ac586f7ba6cfb0775af44f91f9ab638c
 -    implementation(project(":paper-mojangapi"))
 +    // Augustus start - Build changes
 +    implementation(project(":augustus-api"))
-+    implementation("io.papermc.paper:paper-mojangapi:1.20.2-R0.1-SNAPSHOT") {
++    implementation("io.papermc.paper:paper-mojangapi:1.20.4-R0.1-SNAPSHOT") {
 +        exclude("io.papermc.paper", "paper-api")
 +    }
 +    // Augustus end - Build changes
