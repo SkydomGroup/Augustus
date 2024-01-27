@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chosen_1st <haizhongdelan@outlook.com>
-Date: Sat, 18 Nov 2023 19:28:01 +0800
+Date: Sat, 27 Jan 2024 20:12:28 +0800
 Subject: [PATCH] Add Config and Command
 
 
@@ -402,10 +402,10 @@ index 0000000000000000000000000000000000000000..9d4e244b8ab91a5e0b046ad6f19c8528
 +    }
 +}
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index a2f71a6d1a9e98133dff6cd0f625da9435a8af14..f0d0544c03c94080fcb2e7c5ae566d08cd6b5661 100644
+index 7620c72a4c243cbeea245203ce03a97cbfa7d922..ba65d5d664694b54fde9caedb2aba3074f7a1ad0 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -242,7 +242,8 @@ public class TimingsExport extends Thread {
+@@ -240,7 +240,8 @@ public class TimingsExport extends Thread {
          parent.put("config", createObject(
              pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
@@ -416,13 +416,13 @@ index a2f71a6d1a9e98133dff6cd0f625da9435a8af14..f0d0544c03c94080fcb2e7c5ae566d08
  
          new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index cf605aa56adf7f80d3b409f60a92a5ca7ae8fd07..bb2a0cafbc86e34120b1d4eeb78813f021080605 100644
+index 6de6dad36203479677a29ad61e21bc369d4e5513..300c92b01734c1f127ac718f0a6cca695cd70af5 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -218,6 +218,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-         thread.start(); // Paper - start console thread after MinecraftServer.console & PaperConfig are initialized
-         io.papermc.paper.command.PaperCommands.registerCommands(this);
-         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics();
+@@ -219,6 +219,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         thread.start(); // Paper - Enhance console tab completions for brigadier commands; start console thread after MinecraftServer.console & PaperConfig are initialized
+         io.papermc.paper.command.PaperCommands.registerCommands(this); // Paper - setup /paper command
+         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
 +        // Augustus start - Add Config and Command
 +        try {
 +            cc.skydom.server.chosen.AugustusConfig.init((java.io.File) options.valueOf("augustus-settings"));
@@ -432,34 +432,34 @@ index cf605aa56adf7f80d3b409f60a92a5ca7ae8fd07..bb2a0cafbc86e34120b1d4eeb78813f0
 +        }
 +        cc.skydom.server.chosen.AugustusConfig.registerCommands();
 +        // Augustus end - Add Config and Command
-         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
-         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
-         // Paper end
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
+         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // Paper - init PaperBrigadierProvider
+ 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 2354a0e5d15e9be633d9fe3a1a9feefe7b9b7782..ef906caa9163cdd3d92d7ac32d62a2cd99e9a6f2 100644
+index 8f437225d2a4e08ca47873cd42277d9f0f9f5529..45e7490987b0f13103128ede48337fdda27ca96d 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -176,6 +176,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
-     // Paper end
+@@ -178,6 +178,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     // Paper end - add paper world config
  
      public final com.destroystokyo.paper.antixray.ChunkPacketBlockController chunkPacketBlockController; // Paper - Anti-Xray
 +    public final cc.skydom.server.chosen.AugustusWorldConfig augustusConfig; // Augustus - Add Config and Command
      public final co.aikar.timings.WorldTimingsHandler timings; // Paper
      public static BlockPos lastPhysicsProblem; // Spigot
      private org.spigotmc.TickLimiter entityLimiter;
-@@ -213,6 +214,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
-     protected Level(WritableLevelData worlddatamutable, ResourceKey<Level> resourcekey, RegistryAccess iregistrycustom, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean flag, boolean flag1, long i, int j, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env, java.util.function.Function<org.spigotmc.SpigotWorldConfig, io.papermc.paper.configuration.WorldConfiguration> paperWorldConfigCreator, java.util.concurrent.Executor executor) { // Paper - Async-Anti-Xray - Pass executor
+@@ -215,6 +216,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     protected Level(WritableLevelData worlddatamutable, ResourceKey<Level> resourcekey, RegistryAccess iregistrycustom, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean flag, boolean flag1, long i, int j, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env, java.util.function.Function<org.spigotmc.SpigotWorldConfig, io.papermc.paper.configuration.WorldConfiguration> paperWorldConfigCreator, java.util.concurrent.Executor executor) { // Paper - create paper world config; Async-Anti-Xray: Pass executor
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
-         this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper
+         this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper - create paper world config
 +        this.augustusConfig = new cc.skydom.server.chosen.AugustusWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Augustus - Add Config and Command
          this.generator = gen;
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 428426e1144bca014e3524158c2cbe1cd37244ef..6e9fabbb363513b2bbd7261f6bbc7caf59859826 100644
+index fad950a682f03138f8c0f7b296a14854f3a34661..2d06914d2859dc58a46490146c32e1ff1e735b67 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -1041,6 +1041,7 @@ public final class CraftServer implements Server {
+@@ -1037,6 +1037,7 @@ public final class CraftServer implements Server {
  
          org.spigotmc.SpigotConfig.init((File) this.console.options.valueOf("spigot-settings")); // Spigot
          this.console.paperConfigurations.reloadConfigs(this.console);
@@ -467,7 +467,7 @@ index 428426e1144bca014e3524158c2cbe1cd37244ef..6e9fabbb363513b2bbd7261f6bbc7caf
          for (ServerLevel world : this.console.getAllLevels()) {
              // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
              world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
-@@ -1056,6 +1057,7 @@ public final class CraftServer implements Server {
+@@ -1052,6 +1053,7 @@ public final class CraftServer implements Server {
                  }
              }
              world.spigotConfig.init(); // Spigot
@@ -475,7 +475,7 @@ index 428426e1144bca014e3524158c2cbe1cd37244ef..6e9fabbb363513b2bbd7261f6bbc7caf
          }
  
          Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
-@@ -1071,6 +1073,7 @@ public final class CraftServer implements Server {
+@@ -1067,6 +1069,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          io.papermc.paper.command.PaperCommands.registerCommands(this.console); // Paper
@@ -483,7 +483,7 @@ index 428426e1144bca014e3524158c2cbe1cd37244ef..6e9fabbb363513b2bbd7261f6bbc7caf
          this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
          this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
  
-@@ -2978,6 +2981,13 @@ public final class CraftServer implements Server {
+@@ -2998,6 +3001,13 @@ public final class CraftServer implements Server {
              return CraftServer.this.console.paperConfigurations.createLegacyObject(CraftServer.this.console);
          }
  
@@ -498,10 +498,10 @@ index 428426e1144bca014e3524158c2cbe1cd37244ef..6e9fabbb363513b2bbd7261f6bbc7caf
          public void restart() {
              org.spigotmc.RestartCommand.restart();
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 2af0068ef338634d1f44532af5db66c2d0b3dd10..b59d9822e3b9132cc5c1b6f79301d84d4d7a4901 100644
+index ce341f42b3a5e17fb6d1f7de8057e73137ae2a6e..9e3092520a7f67b69e93dadda0ced24723136ed4 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -173,6 +173,14 @@ public class Main {
+@@ -174,6 +174,14 @@ public class Main {
                          .describedAs("Jar file");
                  // Paper end
  

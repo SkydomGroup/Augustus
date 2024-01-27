@@ -1,16 +1,16 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chosen_1st <haizhongdelan@outlook.com>
-Date: Sat, 18 Nov 2023 19:39:15 +0800
+Date: Sat, 27 Jan 2024 20:17:51 +0800
 Subject: [PATCH] Toggle sand duping
 
 
 diff --git a/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java b/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java
-index d06608dbde346b4f24a0ad7e077e740f825c0f24..a6bf5dedf405cbcfa2391eb8eefe00a4d39431bc 100644
+index b318bb28ea34c0d63e93b8c65798ca50551dbc39..b83024f4a8b7fd2e2e651624d2568337fa77ae9d 100644
 --- a/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java
 +++ b/src/main/java/cc/skydom/server/chosen/AugustusWorldConfig.java
-@@ -122,8 +122,10 @@ public class AugustusWorldConfig {
+@@ -121,8 +121,10 @@ public class AugustusWorldConfig {
+         return value.isEmpty() ? fallback : value;
      }
- 
      public boolean safeteleporting = true;
 +    public boolean sandduping = false;
  
@@ -20,7 +20,7 @@ index d06608dbde346b4f24a0ad7e077e740f825c0f24..a6bf5dedf405cbcfa2391eb8eefe00a4
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-index e6f75a9cac46c8e3ddba664a9d5b27b665a94cb4..33a2d2839b3bbee00a4858148102417d6aaea733 100644
+index 9daf8aa557d9f4fdbcc138a47892ea5a061dd877..3dca20c5ff81ddc09a2258290e6d42ed3a968c4e 100644
 --- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
 @@ -133,7 +133,7 @@ public class FallingBlockEntity extends Entity {
@@ -32,9 +32,9 @@ index e6f75a9cac46c8e3ddba664a9d5b27b665a94cb4..33a2d2839b3bbee00a4858148102417d
              return;
          }
          // Paper end - fix sand duping
-@@ -150,7 +150,7 @@ public class FallingBlockEntity extends Entity {
-             this.move(MoverType.SELF, this.getDeltaMovement());
+@@ -149,7 +149,7 @@ public class FallingBlockEntity extends Entity {
  
+             this.move(MoverType.SELF, this.getDeltaMovement());
              // Paper start - fix sand duping
 -            if (this.isRemoved()) {
 +            if (!this.level().augustusConfig.sandduping && this.isRemoved()) { // Augustus - Toggle sand duping

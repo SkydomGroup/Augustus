@@ -5,10 +5,10 @@ Subject: [PATCH] Add Config
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index d0c634629aa0b6bac0da93655dd86ad3aea0ce30..58699c01db66b3972ccd6b9bef30901d6a0977bd 100644
+index 9af4bc16da09e59009c47911219e99450cdf2aa5..ab04c2c720989cc97dd3d3617e1bc3821b34c038 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2188,6 +2188,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2196,6 +2196,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          {
              throw new UnsupportedOperationException("Not supported yet.");
          }
